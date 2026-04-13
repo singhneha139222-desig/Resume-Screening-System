@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screener Pro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                        brandBlue: '#3b82f6',
+                        brandIndigo: '#6366f1'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased text-gray-200">
+
+    <!-- Navigation -->
+    <nav class="glass-panel sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-r from-brandBlue to-brandIndigo p-2 rounded-lg shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <a href="/" class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 tracking-tight">AI Resume Screener Pro</a>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    {% if session.get('user_id') %}
+                        <a href="/" class="text-gray-300 hover:text-white transition cursor-pointer">Upload</a>
+                        <a href="/ranking" class="text-gray-300 hover:text-white transition flex items-center gap-2">
+                            <span>Leaderboard</span>
+                            {% if candidate_count is defined and candidate_count > 0 %}
+                                <span class="bg-blue-600 text-xs px-2 py-0.5 rounded-full">{{ candidate_count }}</span>
+                            {% endif %}
+                        </a>
+                        <!-- User Dropdown & Logout -->
+                        <div class="pl-4 border-l border-gray-700 flex items-center gap-4">
+                            <span class="text-sm font-medium text-gray-400">Hi, {{ session.username }}</span>
+                            <a href="/logout" class="text-sm bg-red-500/10 text-red-400 hover:bg-red-500/20 px-4 py-2 rounded-md transition font-medium">Log out</a>
+                        </div>
+                    {% else %}
+                        <a href="/login" class="text-gray-300 hover:text-white font-medium">Sign In</a>
+                        <a href="/register" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-5 py-2 rounded-md transition shadow-md font-medium">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-4xl mx-auto mt-6 px-4 w-full">
+                {% for category, message in messages %}
+                    {% set color = 'blue' %}
+                    {% if category == 'error' %}{% set color = 'red' %}
+                    {% elif category == 'success' %}{% set color = 'green' %}
+                    {% elif category == 'warning' %}{% set color = 'yellow' %}
+                    {% endif %}
+                    <div class="bg-{{ color }}-500/10 border-l-4 border-{{ color }}-500 text-{{ color }}-400 p-4 rounded-r-md mb-4 flex items-center gap-3 animate-fade-in shadow-lg">
+                        <span class="text-{{ color }}-500">
+                            {% if category == 'success' %}
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            {% else %}
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            {% endif %}
+                        </span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col pt-8 pb-16">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

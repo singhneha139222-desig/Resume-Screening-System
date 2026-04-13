@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex-grow flex items-center justify-center">
+    <div class="glass-panel w-full max-w-md p-8 rounded-2xl animate-fade-in shadow-2xl border border-gray-800">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+            <p class="text-gray-400 text-sm">Sign in to manage candidate resumes and leaderboards.</p>
+        </div>
+        
+        <form method="POST" action="/login" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                <input type="email" name="email" id="email" required
+                    class="w-full bg-gray-900/50 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-brandBlue focus:ring-1 focus:ring-brandBlue transition"
+                    placeholder="recruiter@company.com">
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                <input type="password" name="password" id="password" required
+                    class="w-full bg-gray-900/50 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-brandBlue focus:ring-1 focus:ring-brandBlue transition"
+                    placeholder="••••••••">
+            </div>
+            
+            <button type="submit" 
+                class="w-full bg-gradient-to-r from-brandBlue to-brandIndigo hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                Sign In
+            </button>
+        </form>
+        
+        <div class="mt-6 border-t border-gray-800 pt-6 text-center">
+            <p class="text-gray-400 text-sm">Don't have an account? 
+                <a href="/register" class="text-brandBlue hover:text-blue-400 font-medium transition">Create one</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
