@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TalentScan — Resume Screening System</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <span class="logo-icon">⬡</span>
+    <span class="logo-text">TalentScan</span>
+  </div>
+  <nav class="nav">
+    <a class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+      <span class="nav-icon">◈</span> Dashboard
+    </a>
+    <a class="nav-item" data-page="jobs" onclick="navigate('jobs')">
+      <span class="nav-icon">◧</span> Job Listings
+    </a>
+    <a class="nav-item" data-page="apply" onclick="navigate('apply')">
+      <span class="nav-icon">◉</span> Submit Resume
+    </a>
+    <a class="nav-item" data-page="candidates" onclick="navigate('candidates')">
+      <span class="nav-icon">◫</span> Candidates
+    </a>
+  </nav>
+  <div class="sidebar-footer">v1.0 · AI Powered</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+      <div class="badge-live">● LIVE</div>
+      <div class="avatar">HR</div>
+    </div>
+  </header>
+
+  <!-- PAGES -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card" id="stat-jobs"><div class="stat-num">—</div><div class="stat-label">Open Positions</div></div>
+      <div class="stat-card accent" id="stat-total"><div class="stat-num">—</div><div class="stat-label">Total Applicants</div></div>
+      <div class="stat-card green" id="stat-short"><div class="stat-num">—</div><div class="stat-label">Shortlisted</div></div>
+      <div class="stat-card yellow" id="stat-review"><div class="stat-num">—</div><div class="stat-label">Under Review</div></div>
+      <div class="stat-card red" id="stat-reject"><div class="stat-num">—</div><div class="stat-label">Rejected</div></div>
+      <div class="stat-card purple" id="stat-score"><div class="stat-num">—</div><div class="stat-label">Avg. Score</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><h2 class="card-title">Applications by Role</h2></div>
+        <div id="jobChart" class="chart-area"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2 class="card-title">Recent Candidates</h2></div>
+        <div id="recentList" class="recent-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOBS PAGE -->
+  <div class="page" id="page-jobs">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Job Listings</h2>
+        <button class="btn btn-primary" onclick="openJobModal()">+ Add Job</button>
+      </div>
+      <div id="jobsList" class="jobs-grid"></div>
+    </div>
+
+    <!-- Job Modal -->
+    <div class="modal-overlay" id="jobModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="jobModalTitle">Add New Job</h3>
+          <button class="modal-close" onclick="closeJobModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Job Title *</label>
+            <input type="text" id="jTitle" placeholder="e.g. Senior React Developer"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Department</label>
+              <input type="text" id="jDept" placeholder="Engineering"/>
+            </div>
+            <div class="form-group">
+              <label>Min. Experience (yrs)</label>
+              <input type="number" id="jExp" min="0" value="2"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Min. Education</label>
+            <select id="jEdu">
+              <option>High School</option>
+              <option>Associate</option>
+              <option selected>Bachelor</option>
+              <option>Master</option>
+              <option>PhD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Required Skills (comma-separated)</label>
+            <input type="text" id="jSkills" placeholder="React, TypeScript, Node.js"/>
+          </div>
+          <div class="form-group">
+            <label>Job Description</label>
+            <textarea id="jDesc" rows="3" placeholder="Describe the role..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeJobModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveJob()">Save Job</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLY PAGE -->
+  <div class="page" id="page-apply">
+    <div class="card apply-card">
+      <div class="apply-hero">
+        <div class="apply-icon">◉</div>
+        <h2>Submit Your Application</h2>
+        <p>Our AI engine will screen your resume instantly</p>
+      </div>
+      <form id="applyForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>Select Job Position *</label>
+          <select id="aJobId" required></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="aName" placeholder="Jane Smith" required/>
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="aEmail" placeholder="jane@email.com" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="aPhone" placeholder="+91 98765 43210"/>
+          </div>
+          <div class="form-group">
+            <label>Years of Experience *</label>
+            <input type="number" id="aExp" min="0" max="40" value="2" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Education Level *</label>
+          <select id="aEdu" required>
+            <option>High School</option>
+            <option>Associate</option>
+            <option selected>Bachelor</option>
+            <option>Master</option>
+            <option>PhD</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Your Skills (comma-separated) *</label>
+          <input type="text" id="aSkills" placeholder="React, JavaScript, CSS, Node.js" required/>
+        </div>
+        <div class="form-group">
+          <label>Certifications (comma-separated)</label>
+          <input type="text" id="aCerts" placeholder="AWS Certified, PMP, Google Cloud..."/>
+        </div>
+        <div class="form-group">
+          <label>Professional Summary</label>
+          <textarea id="aSummary" rows="3" placeholder="Brief intro about your background..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Upload Resume (PDF/DOC/DOCX, max 5MB)</label>
+          <div class="file-drop" id="fileDrop" onclick="document.getElementById('aFile').click()">
+            <div class="file-drop-icon">⬆</div>
+            <div class="file-drop-text">Click to upload your resume</div>
+            <div class="file-drop-hint">PDF, DOC, DOCX supported</div>
+          </div>
+          <input type="file" id="aFile" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleFileSelect(this)"/>
+        </div>
+        <button type="button" class="btn btn-primary btn-full" onclick="submitApplication()">
+          Submit & Screen Now →
+        </button>
+      </form>
+    </div>
+
+    <!-- Result Panel -->
+    <div class="result-panel" id="resultPanel" style="display:none">
+      <div class="result-score-ring">
+        <svg viewBox="0 0 120 120" class="ring-svg">
+          <circle cx="60" cy="60" r="50" class="ring-bg"/>
+          <circle cx="60" cy="60" r="50" class="ring-fill" id="ringFill"/>
+        </svg>
+        <div class="ring-text">
+          <div class="ring-num" id="resultScore">0</div>
+          <div class="ring-label">/ 100</div>
+        </div>
+      </div>
+      <div class="result-status" id="resultStatus">—</div>
+      <div class="result-breakdown" id="resultBreakdown"></div>
+      <div class="result-feedback" id="resultFeedback"></div>
+    </div>
+  </div>
+
+  <!-- CANDIDATES PAGE -->
+  <div class="page" id="page-candidates">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">All Candidates</h2>
+        <div class="filter-bar">
+          <input type="text" id="searchInput" placeholder="Search name, email, skill..." oninput="filterCandidates()"/>
+          <select id="statusFilter" onchange="filterCandidates()">
+            <option value="">All Status</option>
+            <option>Shortlisted</option>
+            <option>Under Review</option>
+            <option>Rejected</option>
+          </select>
+          <select id="jobFilter" onchange="filterCandidates()">
+            <option value="">All Jobs</option>
+          </select>
+        </div>
+      </div>
+      <div id="candidatesTable"></div>
+    </div>
+
+    <!-- Candidate Detail Modal -->
+    <div class="modal-overlay" id="candidateModal">
+      <div class="modal modal-wide">
+        <div class="modal-header">
+          <h3 id="candModalName">Candidate Detail</h3>
+          <button class="modal-close" onclick="closeCandidateModal()">✕</button>
+        </div>
+        <div class="modal-body" id="candModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
